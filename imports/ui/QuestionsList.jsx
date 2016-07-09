@@ -31,6 +31,24 @@ class QuestionsList extends Component {
     ));
   }
 
+
+  renderLoading() {
+    return (
+      <div>Carregando</div>
+    )
+  }
+
+  renderList() {
+    if (this.props.loading) {
+      return this.renderLoading();
+    }
+    return (
+      <ul className="list-group">
+        {this.renderQuestions()}
+      </ul>
+    );
+  }
+
   render() {
     return (
       <div>
@@ -48,9 +66,8 @@ class QuestionsList extends Component {
             </div>
           </div>
         </div>
-        <ul className="list-group">
-          {this.renderQuestions()}
-        </ul>
+
+        {this.renderList()}
       </div>
     );
   }
@@ -61,7 +78,9 @@ QuestionsList.propTypes = {
 };
 
 export default createContainer(() => {
+  const questionsSubscription = Meteor.subscribe("questions");
   return {
-    questions: Questions.find({}).fetch(),
+    questions: Questions.find({}, {sort: {likes: -1}}).fetch(),
+    loading: !questionsSubscription.ready()
   };
 }, QuestionsList);

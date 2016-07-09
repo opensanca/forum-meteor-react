@@ -30,3 +30,9 @@ Meteor.methods({
   }
 
 });
+
+if (Meteor.isServer) {
+  Meteor.publish("questions", function () {
+    return Questions.find({}, {});
+  });
+}
