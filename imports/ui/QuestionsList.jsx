@@ -15,18 +15,19 @@ class QuestionsList extends Component {
     // Find the text field via the React ref
     const text = ReactDOM.findDOMNode(this.refs.textInput).value.trim();
 
-    Questions.insert({
-      text,
-      createdAt: new Date(), // current time
-    });
+    Meteor.call("questions.create", text);
 
     // Clear form
     ReactDOM.findDOMNode(this.refs.textInput).value = '';
   }
 
+  handleLike(questionId) {
+    Meteor.call("questions.like", questionId);
+  };
+
   renderQuestions() {
     return this.props.questions.map((question) => (
-      <Question key={question._id} question={question} />
+      <Question key={question._id} question={question} handleLike={this.handleLike} />
     ));
   }
 
@@ -47,7 +48,7 @@ class QuestionsList extends Component {
             </div>
           </div>
         </div>
-        <ul>
+        <ul className="list-group">
           {this.renderQuestions()}
         </ul>
       </div>
