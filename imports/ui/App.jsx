@@ -49,13 +49,20 @@ class App extends Component {
             </div>
           </div>
         </nav>
-        <form className="new-question" onSubmit={this.handleSubmit.bind(this)} >
-          <input
-            type="text"
-            ref="textInput"
-            placeholder="Adicione uma pergunta"
-          />
-        </form>
+        <div className="container">
+          <div className="well">
+            <div className="form-group">
+              <form className="new-question" onSubmit={this.handleSubmit.bind(this)} >
+                <input
+                  className="form-control"
+                  type="text"
+                  ref="textInput"
+                  placeholder="Adicione uma pergunta"
+                />
+              </form>
+            </div>
+          </div>
+        </div>
         <ul>
           {this.renderQuestions()}
         </ul>
