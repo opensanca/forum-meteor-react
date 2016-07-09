@@ -21,3 +21,5 @@ twbs:bootstrap
 react-meteor-data
 fortawesome:fontawesome
 msavin:mongol
+momentjs:moment
+reywood:publish-composite

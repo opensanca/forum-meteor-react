@@ -1,6 +1,7 @@
 import { Mongo } from 'meteor/mongo';
 
 export const Questions = new Mongo.Collection('questions');
+export const QuestionComments = new Mongo.Collection('question_comments');
 
 Questions.allow({
   update: function(userId, doc, fieldNames, modifier) {
@@ -34,12 +35,46 @@ Meteor.methods({
         solvedAt: new Date()
       }
     });
+  },
+  "questions.comment": function(questionId, text) {
+    QuestionComments.insert({
+      questionId,
+      text,
+      createdAt: new Date(), // current time
+    });
+    Questions.update({_id: questionId}, {
+      $inc: {
+        commentsCount: 1
+      }
+    });
+    // Questions.update({_id: questionId}, {
+    // });
   }
 
 });
 
 if (Meteor.isServer) {
   Meteor.publish("questions", function () {
-    return Questions.find({}, {});
+    return Questions.find({}, {
+      fields: {
+        text: 1,
+        likes: 1,
+        solvedAt: 1
+      }
+    });
+  });
+  Meteor.publishComposite("question", function (questionId) {
+    return {
+      find: function() {
+        return Questions.find({_id: questionId}, {});
+      },
+      children: [
+        {
+          find: function(question) {
+            return QuestionComments.find({questionId: question._id}, {});
+          }
+        }
+      ]
+    }
   });
 }

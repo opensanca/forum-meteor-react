@@ -44,6 +44,7 @@ mobile-experience@1.0.4
 mobile-status-bar@1.0.12
 modules@0.6.5
 modules-runtime@0.6.5
+momentjs:moment@2.14.1
 mongo@1.1.9_1
 mongo-id@1.0.5
 msavin:mongol@2.0.1
@@ -57,6 +58,7 @@ reactive-dict@1.1.8
 reactive-var@1.0.10
 reload@1.1.10
 retry@1.0.8
+reywood:publish-composite@1.4.2
 routepolicy@1.0.11
 session@1.1.6
 spacebars@1.0.12
