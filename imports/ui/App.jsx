@@ -1,19 +1,31 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
+import ReactDOM from 'react-dom';
+
+import { createContainer } from 'meteor/react-meteor-data';
+
+import { Questions } from '../api/questions.js';
 
 import Question from './Question.jsx';
 
 // App component - represents the whole app
-export default class App extends Component {
-  getQuestions() {
-    return [
-      { _id: 1, text: 'This is task 1' },
-      { _id: 2, text: 'This is task 2' },
-      { _id: 3, text: 'This is task 3' },
-    ];
+class App extends Component {
+
+  handleSubmit(event) {
+    event.preventDefault();
+    // Find the text field via the React ref
+    const text = ReactDOM.findDOMNode(this.refs.textInput).value.trim();
+
+    Questions.insert({
+      text,
+      createdAt: new Date(), // current time
+    });
+
+    // Clear form
+    ReactDOM.findDOMNode(this.refs.textInput).value = '';
   }
 
   renderQuestions() {
-    return this.getQuestions().map((question) => (
+    return this.props.questions.map((question) => (
       <Question key={question._id} question={question} />
     ));
   }
@@ -37,6 +49,13 @@ export default class App extends Component {
             </div>
           </div>
         </nav>
+        <form className="new-question" onSubmit={this.handleSubmit.bind(this)} >
+          <input
+            type="text"
+            ref="textInput"
+            placeholder="Adicione uma pergunta"
+          />
+        </form>
         <ul>
           {this.renderQuestions()}
         </ul>
@@ -44,3 +63,13 @@ export default class App extends Component {
     );
   }
 }
+
+App.propTypes = {
+  questions: PropTypes.array.isRequired,
+};
+
+export default createContainer(() => {
+  return {
+    questions: Questions.find({}).fetch(),
+  };
+}, App);
