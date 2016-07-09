@@ -33,7 +33,11 @@ export default class QuestionItem extends Component {
         <Link to={"/" + this.props.question._id}>
           {this.props.question.text}
         </Link>
+        <p>
+          {this.props.user.profile.name}
+        </p>
         <div className="actions">
+          {this.props.question.commentsCount || 0} Comentários -
           {this.props.question.likes || 0}
           <a href="#" className="btn btn-link" onClick={this.handleLike.bind(this)}>
             <i className="fa fa-thumbs-up" aria-hidden="true"></i>

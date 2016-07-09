@@ -4,11 +4,23 @@ import ReactDOM from 'react-dom';
 import { createContainer } from 'meteor/react-meteor-data';
 
 import { Questions } from '../api/questions.js';
+import { Link, browserHistory } from 'react-router';
 
 import QuestionItem from './QuestionItem.jsx';
 
 // App component - represents the whole app
 class QuestionsList extends Component {
+
+  componentDidUpdate() {
+    if (!this.props.user) {
+      browserHistory.push("/login");
+    }
+  }
+  componentDidMount() {
+    if (!this.props.user) {
+      browserHistory.push("/login");
+    }
+  }
 
   handleSubmit(event) {
     event.preventDefault();
@@ -31,13 +43,13 @@ class QuestionsList extends Component {
 
   renderQuestions() {
     return this.props.openQuestions.map((question) => (
-      <QuestionItem key={question._id} question={question} handleLike={this.handleLike} handleSolve={this.handleSolve} />
+      <QuestionItem user={this.props.users.find((user) => (user._id == question.userId))} key={question._id} question={question} handleLike={this.handleLike} handleSolve={this.handleSolve} />
     ));
   }
 
   renderSolvedQuestions() {
     return this.props.solvedQuestions.map((question) => (
-      <QuestionItem key={question._id} question={question} handleLike={this.handleLike} handleSolve={this.handleSolve} />
+      <QuestionItem user={this.props.users.find((user) => (user._id == question.userId))} key={question._id} question={question} handleLike={this.handleLike} handleSolve={this.handleSolve} />
     ));
   }
 
@@ -92,8 +104,10 @@ export default createContainer(
   () => {
     const questionsSubscription = Meteor.subscribe("questions");
     return {
+      user: Meteor.user(),
       openQuestions: Questions.find({solvedAt: null}, {sort: {likes: -1}}).fetch(),
       solvedQuestions: Questions.find({solvedAt: {$ne: null}}, {sort: {likes: -1}}).fetch(),
+      users: Meteor.users.find().fetch(),
       loading: !questionsSubscription.ready()
     };
   },
