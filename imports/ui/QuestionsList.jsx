@@ -25,12 +25,21 @@ class QuestionsList extends Component {
     Meteor.call("questions.like", questionId);
   };
 
+  handleSolve(questionId) {
+    Meteor.call("questions.solve", questionId);
+  }
+
   renderQuestions() {
-    return this.props.questions.map((question) => (
-      <Question key={question._id} question={question} handleLike={this.handleLike} />
+    return this.props.openQuestions.map((question) => (
+      <Question key={question._id} question={question} handleLike={this.handleLike} handleSolve={this.handleSolve} />
     ));
   }
 
+  renderSolvedQuestions() {
+    return this.props.solvedQuestions.map((question) => (
+      <Question key={question._id} question={question} handleLike={this.handleLike} handleSolve={this.handleSolve} />
+    ));
+  }
 
   renderLoading() {
     return (
@@ -43,9 +52,14 @@ class QuestionsList extends Component {
       return this.renderLoading();
     }
     return (
-      <ul className="list-group">
-        {this.renderQuestions()}
-      </ul>
+      <div>
+        <ul className="list-group">
+          {this.renderQuestions()}
+        </ul>
+        <ul className="list-group">
+          {this.renderSolvedQuestions()}
+        </ul>
+      </div>
     );
   }
 
@@ -73,14 +87,28 @@ class QuestionsList extends Component {
   }
 }
 
-QuestionsList.propTypes = {
-  questions: PropTypes.array.isRequired,
-};
+export default createContainer(
+  () => {
+    const questionsSubscription = Meteor.subscribe("questions");
+    return {
+      openQuestions: Questions.find({solvedAt: null}, {sort: {likes: -1}}).fetch(),
+      solvedQuestions: Questions.find({solvedAt: {$ne: null}}, {sort: {likes: -1}}).fetch(),
+      loading: !questionsSubscription.ready()
+    };
+  },
+  QuestionsList);
 
-export default createContainer(() => {
-  const questionsSubscription = Meteor.subscribe("questions");
-  return {
-    questions: Questions.find({}, {sort: {likes: -1}}).fetch(),
-    loading: !questionsSubscription.ready()
-  };
-}, QuestionsList);
+
+// export default class Container extends Component {
+//
+//   render() {
+//     const questionsSubscription = Meteor.subscribe("questions");
+//     data = {
+//       questions: Questions.find({}, {sort: {likes: -1}}).fetch(),
+//       loading: !questionsSubscription.ready()
+//     }
+//     return (
+//       <QuestionsList questions={data.questions} loading={data.loading} />
+//     );
+//   }
+// }

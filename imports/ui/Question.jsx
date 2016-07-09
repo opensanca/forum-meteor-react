@@ -8,6 +8,24 @@ export default class Question extends Component {
     this.props.handleLike(this.props.question._id);
   }
 
+  handleSolve(event) {
+    event.preventDefault();
+    this.props.handleSolve(this.props.question._id);
+  }
+
+  renderSolveButton() {
+    if (this.props.question.solvedAt != null) {
+      return (
+        <span>resolvido</span>
+      )
+    }
+    return (
+      <a href="#" className="btn btn-default" onClick={this.handleSolve.bind(this)}>
+        resolver
+      </a>
+    );
+  }
+
   render() {
     return (
       <li className="list-group-item">
@@ -17,6 +35,9 @@ export default class Question extends Component {
           <a href="#" className="btn btn-link" onClick={this.handleLike.bind(this)}>
             <i className="fa fa-thumbs-up" aria-hidden="true"></i>
           </a>
+          <div className="pull-right">
+            {this.renderSolveButton()}
+          </div>
         </div>
       </li>
     );

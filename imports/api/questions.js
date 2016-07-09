@@ -27,6 +27,13 @@ Meteor.methods({
       text,
       createdAt: new Date(), // current time
     });
+  },
+  "questions.solve": function(questionId) {
+    Questions.update({_id: questionId}, {
+      $set: {
+        solvedAt: new Date()
+      }
+    });
   }
 
 });
