@@ -5,7 +5,7 @@ import { createContainer } from 'meteor/react-meteor-data';
 
 import { Questions } from '../api/questions.js';
 
-import Question from './Question.jsx';
+import QuestionItem from './QuestionItem.jsx';
 
 // App component - represents the whole app
 class QuestionsList extends Component {
@@ -31,13 +31,13 @@ class QuestionsList extends Component {
 
   renderQuestions() {
     return this.props.openQuestions.map((question) => (
-      <Question key={question._id} question={question} handleLike={this.handleLike} handleSolve={this.handleSolve} />
+      <QuestionItem key={question._id} question={question} handleLike={this.handleLike} handleSolve={this.handleSolve} />
     ));
   }
 
   renderSolvedQuestions() {
     return this.props.solvedQuestions.map((question) => (
-      <Question key={question._id} question={question} handleLike={this.handleLike} handleSolve={this.handleSolve} />
+      <QuestionItem key={question._id} question={question} handleLike={this.handleLike} handleSolve={this.handleSolve} />
     ));
   }
 
@@ -53,9 +53,11 @@ class QuestionsList extends Component {
     }
     return (
       <div>
+        <h3>Perguntas abertas</h3>
         <ul className="list-group">
           {this.renderQuestions()}
         </ul>
+        <h3>Perguntas respondidas</h3>
         <ul className="list-group">
           {this.renderSolvedQuestions()}
         </ul>
@@ -79,9 +81,8 @@ class QuestionsList extends Component {
               </form>
             </div>
           </div>
+          {this.renderList()}
         </div>
-
-        {this.renderList()}
       </div>
     );
   }

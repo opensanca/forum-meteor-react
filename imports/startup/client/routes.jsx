@@ -16,6 +16,6 @@ export const renderRoutes = () => (
       <IndexRoute component={QuestionsList} />
       <Route path="not_found" component={NotFoundPage} />
     </Route>
-    <Route path="*" component={App}/>
+    <Route path="*" component={NotFoundPage}/>
   </Router>
 );
